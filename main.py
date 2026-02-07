@@ -15,7 +15,7 @@ from fastapi.responses import FileResponse
 
 @app.get("/")
 def home():
-    return FileResponse("index.html")
+    return FileResponse("./index.html")
 
 
 def generate_executive_brief(data):
@@ -62,4 +62,5 @@ def executive_brief():
         "title": "Overnight Executive Brief",
         "summary": generate_executive_brief(data)
     }
+
 
