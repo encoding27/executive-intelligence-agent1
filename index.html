@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Executive Intelligence Agent</title>
+
+  <!-- PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #020617;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --btn: #2563eb;
+    }
+
+    body.light {
+      --bg: #f9fafb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --btn: #2563eb;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: all 0.3s ease;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .top-actions button {
+      margin-left: 10px;
+    }
+
+    button {
+      background: var(--btn);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    /* Floating Generate Button */
+    .floating-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 14px 24px;
+      font-size: 15px;
+      border-radius: 30px;
+      box-shadow: 0 10px 30px rgba(37,99,235,0.4);
+      z-index: 1000;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      min-height: 140px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #93c5fd;
+    }
+
+    ul {
+      padding-left: 18px;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .full {
+      grid-column: span 2;
+    }
+
+    .loading {
+      opacity: 0.6;
+      font-style: italic;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container" id="report">
+
+    <div class="header">
+      <div>
+        <h1>Executive Intelligence Dashboard</h1>
+        <p>AI-powered business decision support</p>
+      </div>
+
+      <div class="top-actions">
+        <button onclick="toggleTheme()">🌗 Theme</button>
+        <button onclick="exportPDF()">📄 Export PDF</button>
+      </div>
+    </div>
+
+    <div id="status" class="loading">Waiting for analysis…</div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>🔍 Key Insights</h3>
+        <ul id="insights"></ul>
+      </div>
+
+      <div class="card">
+        <h3>⚠️ Risks</h3>
+        <ul id="risks"></ul>
+      </div>
+
+      <div class="card full">
+        <h3>🚀 Opportunity</h3>
+        <p id="opportunity"></p>
+      </div>
+
+      <div class="card full">
+        <h3>✅ Recommended Actions</h3>
+        <ul id="actions"></ul>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Floating Generate Button -->
+  <button class="floating-btn" onclick="generate()">▶ Generate Brief</button>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle("light");
+    }
+
+    function exportPDF() {
+      html2pdf()
+        .from(document.getElementById("report"))
+        .set({ filename: "Executive_Brief.pdf" })
+        .save();
+    }
+
+    async function generate() {
+      document.getElementById("status").innerText = "Analyzing overnight changes…";
+      document.getElementById("status").classList.add("loading");
+
+      const clear = (id) => document.getElementById(id).innerHTML = "";
+      clear("insights"); clear("risks"); clear("actions");
+      document.getElementById("opportunity").innerText = "";
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/executive-brief");
+        const data = await res.json();
+        const s = data.summary;
+
+        s.key_insights.forEach(i =>
+          document.getElementById("insights").innerHTML += `<li>${i}</li>`
+        );
+
+        s.risks.forEach(r =>
+          document.getElementById("risks").innerHTML += `<li>${r}</li>`
+        );
+
+        s.recommended_actions.forEach(a =>
+          document.getElementById("actions").innerHTML += `<li>${a}</li>`
+        );
+
+        document.getElementById("opportunity").innerText = s.opportunity;
+        document.getElementById("status").innerText = "Executive brief generated.";
+        document.getElementById("status").classList.remove("loading");
+
+      } catch {
+        document.getElementById("status").innerText = "Failed to generate brief.";
+      }
+    }
+  </script>
+</body>
+</html>

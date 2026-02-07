@@ -1,0 +1,17 @@
+{
+  "yesterday": {
+    "LTV": 1200,
+    "CAC": 280,
+    "partner_retention": 85
+  },
+  "today": {
+    "LTV": 1125,
+    "CAC": 330,
+    "partner_retention": 72
+  },
+  "context": {
+    "partner_mix": "Shift toward low-quality affiliates",
+    "commission_change": "Competitor increased payouts by 15%",
+    "region": "APAC"
+  }
+}
