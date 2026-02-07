@@ -55,12 +55,13 @@ def generate_executive_brief(data):
 
 @app.get("/executive-brief")
 def executive_brief():
-    with open("data.json") as f:
+    with open("./data.json") as f:
         data = json.load(f)
 
     return {
         "title": "Overnight Executive Brief",
         "summary": generate_executive_brief(data)
     }
+
 
 
