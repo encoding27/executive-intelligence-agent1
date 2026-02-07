@@ -10,7 +10,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-)
+) 
+from fastapi.responses import FileResponse
+
+@app.get("/")
+def home():
+    return FileResponse("index.html")
+
 
 def generate_executive_brief(data):
     y = data["yesterday"]
@@ -56,3 +62,4 @@ def executive_brief():
         "title": "Overnight Executive Brief",
         "summary": generate_executive_brief(data)
     }
+
